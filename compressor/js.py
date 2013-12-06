@@ -12,6 +12,7 @@ class JsCompressor(Compressor):
     def split_contents(self):
         if self.split_content:
             return self.split_content
+        crossorigin = None
         for elem in self.parser.js_elems():
             attribs = self.parser.elem_attribs(elem)
             if 'src' in attribs:
@@ -19,7 +20,13 @@ class JsCompressor(Compressor):
                 filename = self.get_filename(basename)
                 content = (SOURCE_FILE, filename, basename, elem)
                 self.split_content.append(content)
+                if crossorigin is None:
+                    crossorigin = 'crossorigin' in attribs
+                    self.extra_context.update({'crossorigin': crossorigin})
+                elif crossorigin != ('crossorigin' in attribs):
+                    raise Exception('Conflicting cross origin attributes in scripts. %s' % attribs['src'])
             else:
                 content = self.parser.elem_content(elem)
                 self.split_content.append((SOURCE_HUNK, content, None, elem))
+
         return self.split_content
