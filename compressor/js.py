@@ -28,7 +28,7 @@ class JsCompressor(Compressor):
                 crossorigin = 'crossorigin' in attribs
                 self.extra_context.update({'crossorigin': crossorigin})
             elif crossorigin != 'crossorigin' in attribs:
-                raise Exception('Conflicting cross origin attributes in scripts. %s' % attributes.get('src', ''))
+                raise Exception('Conflicting cross origin attributes in scripts. %s' % attribs.get('src', ''))
 
         return self.split_content
 
